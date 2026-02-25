@@ -1,0 +1,12 @@
+import Sidenav from "../../ui/dashboard/side-nav";
+
+export default function Layout({ children }: { children: React.ReactNode }) {
+  return (
+    <div>
+      <div>
+        <Sidenav />
+      </div>
+      <div>{children}</div>
+    </div>
+  );
+}
