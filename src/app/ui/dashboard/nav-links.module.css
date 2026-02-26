@@ -1,0 +1,17 @@
+.item {
+  background: var(--neu-bg);
+  box-shadow: var(--neu-raised-sm);
+  border-radius: 18px;
+  color: var(--neu-text);
+  transition: box-shadow 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.item:hover {
+  box-shadow: var(--neu-hover);
+  color: var(--emeraude);
+}
+
+.active {
+  box-shadow: var(--neu-pressed);
+  color: var(--emeraude);
+}

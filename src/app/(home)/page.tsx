@@ -134,7 +134,7 @@ export default function Home() {
               Prêt à booster ton apprentissage ?
             </h3>
             <p className="mx-auto mb-6 max-w-2xl text-base text-(--neu-text-muted)">
-              Rejoins les étudiants de l&apos;UIT qui utilisent Aura AI pour
+              Rejoins les étudiants de l&apos;IUT qui utilisent Aura AI pour
               réussir.
             </p>
             <Link

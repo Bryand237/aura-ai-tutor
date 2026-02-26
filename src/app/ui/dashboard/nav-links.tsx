@@ -10,6 +10,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import clsx from "clsx";
 
+import styles from "./nav-links.module.css";
+
 export default function NavLinks() {
   const id = "id";
   const pathname = usePathname();
@@ -40,9 +42,10 @@ export default function NavLinks() {
             href={link.href}
             key={link.name}
             className={clsx(
-              `flex h-12 grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-green-50 hover:text-green-600 md:flex-none md:justify-start md:p-2 md:px-3`,
+              "flex h-12 grow items-center justify-center gap-2 p-3 text-sm font-medium md:flex-none md:justify-start md:p-2 md:px-3",
+              styles.item,
               {
-                "bg-green-100 text-green-600": pathname === link.href,
+                [styles.active]: pathname === link.href,
               },
             )}
           >

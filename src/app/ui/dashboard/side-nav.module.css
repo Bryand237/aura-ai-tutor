@@ -1,0 +1,38 @@
+.aside {
+  background: transparent;
+}
+
+.brandCard {
+  background: var(--neu-bg);
+  border-radius: 24px;
+  box-shadow: var(--neu-raised);
+}
+
+.brandLogo {
+  background: linear-gradient(135deg, var(--blue-electric), var(--emeraude));
+  box-shadow: var(--neu-raised-sm);
+}
+
+.spacer {
+  background: var(--neu-bg);
+  border-radius: 16px;
+  box-shadow: var(--neu-raised-sm);
+}
+
+.actionBtn {
+  background: var(--neu-bg);
+  border-radius: 18px;
+  box-shadow: var(--neu-raised-sm);
+  color: var(--neu-text);
+  transition: box-shadow 160ms ease, color 160ms ease, transform 160ms ease;
+}
+
+.actionBtn:hover {
+  box-shadow: var(--neu-hover);
+  color: var(--emeraude);
+}
+
+.actionBtn:active {
+  transform: translateY(1px);
+  box-shadow: var(--neu-pressed);
+}
