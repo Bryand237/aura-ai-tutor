@@ -1,8 +1,49 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #e4e8ec;
   --foreground: #171717;
+
+  /* Neumorphism base */
+  --neu-bg: #e4e8ec;
+  --neu-shadow-dark: #a3b1c6;
+  --neu-shadow-light: #ffffff;
+  --neu-text: #2d3748;
+  --neu-text-muted: #718096;
+
+  /* Brand accents */
+  --emeraude: #50c878;
+  --emeraude-dark: #3fa361;
+  --blue-electric: #0047ab;
+  --blue-electric-light: #1a5fc4;
+
+  /* Neumorphism shadows */
+  --neu-raised:
+    8px 8px 16px var(--neu-shadow-dark), -8px -8px 16px var(--neu-shadow-light);
+  --neu-pressed:
+    inset 6px 6px 12px var(--neu-shadow-dark),
+    inset -6px -6px 12px var(--neu-shadow-light);
+  --neu-raised-sm:
+    4px 4px 8px var(--neu-shadow-dark), -4px -4px 8px var(--neu-shadow-light);
+  --neu-hover:
+    12px 12px 24px var(--neu-shadow-dark),
+    -12px -12px 24px var(--neu-shadow-light);
+}
+
+body.dark-mode {
+  /* Dark theme overrides */
+  --neu-bg: #020617;
+  --neu-shadow-dark: #020617;
+  --neu-shadow-light: #1f2937;
+  --neu-text: #e5e7eb;
+  --neu-text-muted: #9ca3af;
+
+  --background: #020617;
+  --foreground: #e5e7eb;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 @theme inline {
