@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { poppins } from "./ui/fonts";
 import Providers from "./providers";
 
 export const metadata: Metadata = {
@@ -18,7 +17,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="fr">
-      <body className={`${poppins.className} antialiased`}>
+      <body className="antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>

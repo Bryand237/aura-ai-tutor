@@ -1,0 +1,32 @@
+.page {
+  color: var(--neu-text);
+}
+
+.headerCard {
+  background: var(--neu-bg);
+  border-radius: 24px;
+  box-shadow: var(--neu-raised);
+}
+
+.courseCard {
+  background: var(--neu-bg);
+  border-radius: 24px;
+  box-shadow: var(--neu-raised);
+  transition: box-shadow 160ms ease, transform 160ms ease;
+}
+
+.courseCard:hover {
+  box-shadow: var(--neu-hover);
+  transform: translateY(-2px);
+}
+
+.muted {
+  color: var(--neu-text-muted);
+}
+
+.badge {
+  background: var(--neu-bg);
+  border-radius: 9999px;
+  box-shadow: var(--neu-raised-sm);
+  color: var(--neu-text-muted);
+}

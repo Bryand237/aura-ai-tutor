@@ -1,0 +1,104 @@
+.page {
+  color: var(--neu-text);
+}
+
+.headerCard {
+  background: var(--neu-bg);
+  border-radius: 24px;
+  box-shadow: var(--neu-raised);
+}
+
+.card {
+  background: var(--neu-bg);
+  border-radius: 24px;
+  box-shadow: var(--neu-raised);
+}
+
+.cardHover {
+  transition:
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.cardHover:hover {
+  box-shadow: var(--neu-hover);
+  transform: translateY(-2px);
+}
+
+.muted {
+  color: var(--neu-text-muted);
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 9999px;
+  background: var(--neu-bg);
+  box-shadow: var(--neu-raised);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 4px solid var(--emeraude);
+}
+
+.iconBox {
+  width: 60px;
+  height: 60px;
+  border-radius: 20px;
+  background: var(--neu-bg);
+  box-shadow: var(--neu-pressed);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bar {
+  height: 12px;
+  background: var(--neu-bg);
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: var(--neu-pressed);
+}
+
+.barFill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--emeraude), var(--blue-electric));
+  border-radius: 10px;
+}
+
+.badgeItem {
+  width: 50px;
+  height: 50px;
+  border-radius: 16px;
+  background: var(--neu-bg);
+  box-shadow: var(--neu-raised-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  filter: grayscale(1);
+  opacity: 0.5;
+  transition:
+    filter 200ms ease,
+    opacity 200ms ease;
+}
+
+.badgeUnlocked {
+  filter: grayscale(0);
+  opacity: 1;
+}
+
+.badgeGold {
+  background: rgba(245, 158, 11, 0.16);
+}
+
+.badgeRed {
+  background: rgba(239, 68, 68, 0.14);
+}
+
+.badgeBlue {
+  background: rgba(37, 99, 235, 0.14);
+}
+
+.badgeGreen {
+  background: rgba(16, 185, 129, 0.14);
+}

@@ -9,11 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@vercel/blob": "^0.27.0",
     "bcrypt": "^6.0.0",
     "clsx": "^2.1.1",
     "lucide-react": "^0.575.0",
+    "mammoth": "^1.10.0",
     "next": "16.1.6",
     "next-auth": "5.0.0-beta.30",
+    "pdf-parse": "^1.1.1",
     "pg": "^8.16.3",
     "postgres": "^3.4.6",
     "react": "19.2.3",
@@ -25,6 +28,7 @@
     "@tailwindcss/postcss": "^4",
     "@types/bcrypt": "^6.0.0",
     "@types/node": "^20",
+    "@types/pdf-parse": "^1.1.5",
     "@types/pg": "^8.15.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
