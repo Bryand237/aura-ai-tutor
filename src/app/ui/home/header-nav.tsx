@@ -1,19 +1,11 @@
-"use client";
-
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import styles from "@/app/ui/home.module.css";
+import { auth } from "../../../../auth";
 
-export default function HeaderNav() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-
-    const storedAuth = window.localStorage.getItem("aura-auth");
-
-    setIsLoggedIn(Boolean(storedAuth));
-  }, []);
+export default async function HeaderNav() {
+  const session = await auth();
+  const userId = session?.user?.id;
+  const isAuthenticated = typeof userId === "string";
 
   return (
     <nav
@@ -28,9 +20,7 @@ export default function HeaderNav() {
             boxShadow: "var(--neu-raised-sm)",
           }}
         />
-        <span className="text-lg font-bold text-(--neu-text)">
-          Aura AI
-        </span>
+        <span className="text-lg font-bold text-(--neu-text)">Aura AI</span>
       </Link>
 
       <div className="mt-3 flex items-center gap-2 md:mt-0 md:gap-3">
@@ -41,21 +31,13 @@ export default function HeaderNav() {
         >
           À propos
         </Link>
-        <Link
-          href="/help"
-          className={styles.nav_link_neu}
-          data-i18n="navHelp"
-        >
+        <Link href="/help" className={styles.nav_link_neu} data-i18n="navHelp">
           Aide
         </Link>
 
-        {!isLoggedIn ? (
+        {!isAuthenticated ? (
           <>
-            <Link
-              href="/login"
-              className={styles.neu_btn}
-              data-i18n="navLogin"
-            >
+            <Link href="/login" className={styles.neu_btn} data-i18n="navLogin">
               Connexion
             </Link>
             <Link
@@ -67,15 +49,15 @@ export default function HeaderNav() {
             </Link>
           </>
         ) : (
-          <button
-            type="button"
+          <Link
+            href={`/${userId}/dashboard/profile`}
             className={`${styles.neu_btn} rounded-full px-3 py-1`}
           >
             <span className="mr-1 inline-flex h-7 w-7 items-center justify-center rounded-full bg-(--blue-electric) text-xs font-semibold text-white">
-              AU
+              {(session?.user?.name?.slice(0, 1) || "U").toUpperCase()}
             </span>
             <span className="text-sm font-medium">Mon compte</span>
-          </button>
+          </Link>
         )}
       </div>
     </nav>

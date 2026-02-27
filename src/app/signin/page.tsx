@@ -1,8 +1,14 @@
+"use client";
+
 import Link from "next/link";
+import { useActionState } from "react";
+import { register } from "@/app/lib/actions";
 
 import styles from "./page.module.css";
 
 export default function Page() {
+  const [errorMessage, formAction] = useActionState(register, undefined);
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.card}>
@@ -18,7 +24,7 @@ export default function Page() {
           Inscription
         </h4>
 
-        <form>
+        <form action={formAction}>
           <div className={styles.formGroup}>
             <label htmlFor="name" className={styles.label}>
               Nom complet
@@ -98,6 +104,12 @@ export default function Page() {
             Créer mon compte
           </button>
         </form>
+
+        {typeof errorMessage === "string" && errorMessage.length > 0 && (
+          <p className="mt-3 text-center text-sm text-red-600">
+            {errorMessage}
+          </p>
+        )}
 
         <p className="mb-0 mt-3 text-center text-slate-500">
           Déjà un compte ?{" "}

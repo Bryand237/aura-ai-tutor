@@ -8,12 +8,14 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useParams } from "next/navigation";
 import clsx from "clsx";
 
 import styles from "./nav-links.module.css";
 
 export default function NavLinks() {
-  const id = "id";
+  const params = useParams<{ id?: string }>();
+  const id = typeof params?.id === "string" ? params.id : "";
   const pathname = usePathname();
 
   const links = [

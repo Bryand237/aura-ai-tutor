@@ -3,6 +3,7 @@ import Link from "next/link";
 import NavLinks from "./nav-links";
 
 import styles from "./side-nav.module.css";
+import { signOut } from "../../../../auth";
 
 export default function Sidenav() {
   return (
@@ -23,7 +24,12 @@ export default function Sidenav() {
         <div
           className={`hidden h-auto w-full grow md:block ${styles.spacer}`}
         ></div>
-        <form>
+        <form
+          action={async () => {
+            "use server";
+            await signOut({ redirectTo: "/" });
+          }}
+        >
           <button
             className={`flex h-12 w-full grow items-center justify-center gap-2 p-3 text-sm font-medium md:flex-none md:justify-start md:p-2 md:px-3 ${styles.actionBtn}`}
           >

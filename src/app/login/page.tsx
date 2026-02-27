@@ -1,8 +1,47 @@
-import Link from "next/link";
+"use client";
 
+import Link from "next/link";
+import { Suspense, useActionState, useEffect } from "react";
+import { authenticate } from "@/app/lib/actions";
+import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./page.module.css";
+import { CircleAlert } from "lucide-react";
+import { useSession } from "next-auth/react";
 
 export default function Page() {
+  return (
+    <Suspense fallback={null}>
+      <LoginInner />
+    </Suspense>
+  );
+}
+
+function LoginInner() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const { data: session, status } = useSession();
+
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const [errorMessage, formAction, isPending] = useActionState(
+    authenticate,
+    undefined,
+  );
+
+  useEffect(() => {
+    if (status !== "authenticated") return;
+    const id = session?.user?.id;
+    if (!id) return;
+    router.replace(`/${id}/dashboard`);
+  }, [router, session?.user?.id, status]);
+
+  if (status === "loading") {
+    return null;
+  }
+
+  if (status === "authenticated" && session?.user?.id) {
+    return null;
+  }
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.card}>
@@ -18,7 +57,7 @@ export default function Page() {
           Connexion
         </h4>
 
-        <form>
+        <form action={formAction} className="space-y-3">
           <div className={styles.formGroup}>
             <label htmlFor="email" className={styles.label}>
               Email
@@ -59,11 +98,27 @@ export default function Page() {
               Mot de passe oublié ?
             </Link>
           </div>
-
-          <button type="submit" className={styles.button}>
+          <input type="hidden" name="redirectTo" value={callbackUrl} />
+          <button
+            type="submit"
+            className={styles.button}
+            aria-disabled={isPending}
+          >
             Se connecter
           </button>
         </form>
+        <div
+          className="flex h-8 items-end space-x-1"
+          aria-live="polite"
+          aria-atomic="true"
+        >
+          {errorMessage && (
+            <>
+              <CircleAlert className="h-5 w-5 text-red-500" />
+              <p className="text-sm text-red-500">{errorMessage}</p>
+            </>
+          )}
+        </div>
 
         <p className="mb-0 mt-3 text-center text-slate-500">
           Pas encore de compte ?{" "}

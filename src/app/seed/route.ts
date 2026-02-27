@@ -1,4 +1,6 @@
 import postgres from "postgres";
+import bcrypt from "bcrypt";
+import { utilisateurs as placeholderUsers } from "../lib/placeholder-data";
 
 const connectionString = process.env.POSTGRES_URL ?? process.env.DATABASE_URL;
 
@@ -8,10 +10,11 @@ if (!connectionString) {
 
 const sql = postgres(connectionString, { ssl: "require", prepare: false });
 
-async function ensureSchema(tx: any) {
-  await tx`CREATE EXTENSION IF NOT EXISTS "pgcrypto"`;
+async function ensureSchema(tx: unknown) {
+  const q = tx as unknown as ReturnType<typeof postgres>;
+  await q`CREATE EXTENSION IF NOT EXISTS "pgcrypto"`;
 
-  await tx`
+  await q`
     CREATE TABLE IF NOT EXISTS utilisateur (
       id_utilisateur BIGSERIAL PRIMARY KEY,
       nom TEXT NOT NULL,
@@ -21,7 +24,7 @@ async function ensureSchema(tx: any) {
     );
   `;
 
-  await tx`
+  await q`
     CREATE TABLE IF NOT EXISTS cours (
       id_cours BIGSERIAL PRIMARY KEY,
       titre TEXT NOT NULL,
@@ -32,7 +35,7 @@ async function ensureSchema(tx: any) {
     );
   `;
 
-  await tx`
+  await q`
     DO $$
     BEGIN
       CREATE TYPE type_document AS ENUM ('PDF', 'DOCX');
@@ -41,7 +44,7 @@ async function ensureSchema(tx: any) {
     END $$;
   `;
 
-  await tx`
+  await q`
     CREATE TABLE IF NOT EXISTS document (
       id_document BIGSERIAL PRIMARY KEY,
       nom_fichier TEXT NOT NULL,
@@ -53,7 +56,7 @@ async function ensureSchema(tx: any) {
     );
   `;
 
-  await tx`
+  await q`
     CREATE TABLE IF NOT EXISTS conversation (
       id_conversation BIGSERIAL PRIMARY KEY,
       date_debut TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -63,7 +66,7 @@ async function ensureSchema(tx: any) {
     );
   `;
 
-  await tx`
+  await q`
     DO $$
     BEGIN
       CREATE TYPE auteur_message AS ENUM ('utilisateur', 'ia');
@@ -72,7 +75,7 @@ async function ensureSchema(tx: any) {
     END $$;
   `;
 
-  await tx`
+  await q`
     CREATE TABLE IF NOT EXISTS message (
       id_message BIGSERIAL PRIMARY KEY,
       contenu TEXT NOT NULL,
@@ -82,7 +85,7 @@ async function ensureSchema(tx: any) {
     );
   `;
 
-  await tx`
+  await q`
     DO $$
     BEGIN
       CREATE TYPE type_questionnaire AS ENUM ('qcm', 'flashcard', 'mixte');
@@ -91,7 +94,7 @@ async function ensureSchema(tx: any) {
     END $$;
   `;
 
-  await tx`
+  await q`
     CREATE TABLE IF NOT EXISTS questionnaire (
       id_questionnaire BIGSERIAL PRIMARY KEY,
       titre TEXT NOT NULL,
@@ -104,7 +107,7 @@ async function ensureSchema(tx: any) {
     );
   `;
 
-  await tx`
+  await q`
     DO $$
     BEGIN
       CREATE TYPE type_question AS ENUM ('qcm', 'flashcard');
@@ -113,7 +116,7 @@ async function ensureSchema(tx: any) {
     END $$;
   `;
 
-  await tx`
+  await q`
     CREATE TABLE IF NOT EXISTS question (
       id_question BIGSERIAL PRIMARY KEY,
       texte TEXT NOT NULL,
@@ -124,7 +127,7 @@ async function ensureSchema(tx: any) {
     );
   `;
 
-  await tx`
+  await q`
     CREATE TABLE IF NOT EXISTS proposition (
       id_proposition BIGSERIAL PRIMARY KEY,
       texte TEXT NOT NULL,
@@ -133,7 +136,7 @@ async function ensureSchema(tx: any) {
     );
   `;
 
-  await tx`
+  await q`
     CREATE TABLE IF NOT EXISTS session_entrainement (
       id_session BIGSERIAL PRIMARY KEY,
       date_debut TIMESTAMPTZ NOT NULL DEFAULT NOW(),
@@ -143,7 +146,7 @@ async function ensureSchema(tx: any) {
     );
   `;
 
-  await tx`
+  await q`
     CREATE TABLE IF NOT EXISTS reponse_session (
       id_reponse BIGSERIAL PRIMARY KEY,
       reponse_texte TEXT,
@@ -157,36 +160,37 @@ async function ensureSchema(tx: any) {
     );
   `;
 
-  await tx`CREATE INDEX IF NOT EXISTS idx_cours_id_utilisateur ON cours(id_utilisateur)`;
-  await tx`CREATE INDEX IF NOT EXISTS idx_document_id_cours ON document(id_cours)`;
-  await tx`CREATE INDEX IF NOT EXISTS idx_conversation_id_cours ON conversation(id_cours)`;
-  await tx`CREATE INDEX IF NOT EXISTS idx_conversation_id_utilisateur ON conversation(id_utilisateur)`;
-  await tx`CREATE INDEX IF NOT EXISTS idx_message_id_conversation ON message(id_conversation)`;
-  await tx`CREATE INDEX IF NOT EXISTS idx_questionnaire_id_cours ON questionnaire(id_cours)`;
-  await tx`CREATE INDEX IF NOT EXISTS idx_question_id_questionnaire ON question(id_questionnaire)`;
-  await tx`CREATE INDEX IF NOT EXISTS idx_proposition_id_question ON proposition(id_question)`;
-  await tx`CREATE INDEX IF NOT EXISTS idx_session_id_utilisateur ON session_entrainement(id_utilisateur)`;
-  await tx`CREATE INDEX IF NOT EXISTS idx_session_id_questionnaire ON session_entrainement(id_questionnaire)`;
-  await tx`CREATE INDEX IF NOT EXISTS idx_reponse_id_session ON reponse_session(id_session)`;
-  await tx`CREATE INDEX IF NOT EXISTS idx_reponse_id_question ON reponse_session(id_question)`;
+  await q`CREATE INDEX IF NOT EXISTS idx_cours_id_utilisateur ON cours(id_utilisateur)`;
+  await q`CREATE INDEX IF NOT EXISTS idx_document_id_cours ON document(id_cours)`;
+  await q`CREATE INDEX IF NOT EXISTS idx_conversation_id_cours ON conversation(id_cours)`;
+  await q`CREATE INDEX IF NOT EXISTS idx_conversation_id_utilisateur ON conversation(id_utilisateur)`;
+  await q`CREATE INDEX IF NOT EXISTS idx_message_id_conversation ON message(id_conversation)`;
+  await q`CREATE INDEX IF NOT EXISTS idx_questionnaire_id_cours ON questionnaire(id_cours)`;
+  await q`CREATE INDEX IF NOT EXISTS idx_question_id_questionnaire ON question(id_questionnaire)`;
+  await q`CREATE INDEX IF NOT EXISTS idx_proposition_id_question ON proposition(id_question)`;
+  await q`CREATE INDEX IF NOT EXISTS idx_session_id_utilisateur ON session_entrainement(id_utilisateur)`;
+  await q`CREATE INDEX IF NOT EXISTS idx_session_id_questionnaire ON session_entrainement(id_questionnaire)`;
+  await q`CREATE INDEX IF NOT EXISTS idx_reponse_id_session ON reponse_session(id_session)`;
+  await q`CREATE INDEX IF NOT EXISTS idx_reponse_id_question ON reponse_session(id_question)`;
 }
 
-async function seedMockData(tx: any) {
-  const utilisateursSeed = [
-    { nom: "Alice Martin", email: "alice@example.com" },
-    { nom: "Benoit Dupont", email: "benoit@example.com" },
-    { nom: "Chloe Bernard", email: "chloe@example.com" },
-    { nom: "David Petit", email: "david@example.com" },
-    { nom: "Emma Robert", email: "emma@example.com" },
-  ];
+async function seedMockData(tx: unknown) {
+  const q = tx as unknown as ReturnType<typeof postgres>;
+  const utilisateursSeed = placeholderUsers.map((u) => ({
+    nom: u.nom,
+    email: u.email,
+    mot_de_passe: u.mot_de_passe,
+  }));
 
   const utilisateurIds: number[] = [];
   for (const u of utilisateursSeed) {
-    const rows = await tx<{ id_utilisateur: bigint }[]>`
+    const hashedPassword = await bcrypt.hash(u.mot_de_passe, 10);
+    const rows = await q<{ id_utilisateur: bigint }[]>`
       INSERT INTO utilisateur (nom, email, mot_de_passe)
-      VALUES (${u.nom}, ${u.email}, crypt('password', gen_salt('bf')))
+      VALUES (${u.nom}, ${u.email}, ${hashedPassword})
       ON CONFLICT (email) DO UPDATE SET
-        nom = EXCLUDED.nom
+        nom = EXCLUDED.nom,
+        mot_de_passe = EXCLUDED.mot_de_passe
       RETURNING id_utilisateur;
     `;
     utilisateurIds.push(Number(rows[0]!.id_utilisateur));
@@ -206,7 +210,7 @@ async function seedMockData(tx: any) {
     ];
 
     for (const c of coursSeed) {
-      const rows = await tx<{ id_cours: bigint }[]>`
+      const rows = await q<{ id_cours: bigint }[]>`
         INSERT INTO cours (titre, description, id_utilisateur)
         VALUES (${c.titre}, ${c.description}, ${id_utilisateur})
         ON CONFLICT (id_utilisateur, titre) DO UPDATE SET
@@ -218,7 +222,7 @@ async function seedMockData(tx: any) {
   }
 
   for (const id_cours of coursIds) {
-    await tx`
+    await q`
       INSERT INTO document (nom_fichier, chemin_fichier, type_document, contenu_texte, id_cours)
       VALUES
         (${`cours_${id_cours}_intro.pdf`}, ${`/mock/cours_${id_cours}_intro.pdf`}, 'PDF', 'Introduction au cours et notions clés.', ${id_cours}),
@@ -232,7 +236,7 @@ async function seedMockData(tx: any) {
     const id_cours = coursIds[i]!;
     const id_utilisateur = utilisateurIds[i]!;
 
-    const rows = await tx<{ id_conversation: bigint }[]>`
+    const rows = await q<{ id_conversation: bigint }[]>`
       INSERT INTO conversation (id_utilisateur, id_cours)
       VALUES (${id_utilisateur}, ${id_cours})
       RETURNING id_conversation;
@@ -241,7 +245,7 @@ async function seedMockData(tx: any) {
   }
 
   for (const id_conversation of conversationIds) {
-    await tx`
+    await q`
       INSERT INTO message (contenu, auteur, id_conversation)
       VALUES
         ('Peux-tu me résumer le cours ?', 'utilisateur', ${id_conversation}),
@@ -254,7 +258,7 @@ async function seedMockData(tx: any) {
 
   const questionnaireIds: number[] = [];
   for (const id_cours of coursIds) {
-    const rowsQcm = await tx<{ id_questionnaire: bigint }[]>`
+    const rowsQcm = await q<{ id_questionnaire: bigint }[]>`
       INSERT INTO questionnaire (titre, description, type_questionnaire, id_cours, genere_par_ia)
       VALUES (${`QCM - Bases (${id_cours})`}, 'QCM pour réviser les bases.', 'qcm', ${id_cours}, FALSE)
       ON CONFLICT (id_cours, titre) DO UPDATE SET
@@ -263,7 +267,7 @@ async function seedMockData(tx: any) {
       RETURNING id_questionnaire;
     `;
 
-    const rowsFlash = await tx<{ id_questionnaire: bigint }[]>`
+    const rowsFlash = await q<{ id_questionnaire: bigint }[]>`
       INSERT INTO questionnaire (titre, description, type_questionnaire, id_cours, genere_par_ia)
       VALUES (${`Flashcards - Définitions (${id_cours})`}, 'Flashcards pour mémoriser.', 'flashcard', ${id_cours}, FALSE)
       ON CONFLICT (id_cours, titre) DO UPDATE SET
@@ -278,14 +282,14 @@ async function seedMockData(tx: any) {
 
   const questionIds: number[] = [];
   for (const id_questionnaire of questionnaireIds) {
-    const q = await tx<{ type_questionnaire: string }[]>`
+    const qType = await q<{ type_questionnaire: string }[]>`
       SELECT type_questionnaire FROM questionnaire WHERE id_questionnaire = ${id_questionnaire};
     `;
 
-    const type = q[0]?.type_questionnaire;
+    const type = qType[0]?.type_questionnaire;
 
     if (type === "qcm") {
-      const rows = await tx<{ id_question: bigint }[]>`
+      const rows = await q<{ id_question: bigint }[]>`
         INSERT INTO question (texte, explication, type_question, id_questionnaire, genere_par_ia)
         VALUES
           ('Quelle est la dérivée de x^2 ?', 'La dérivée de x^2 est 2x.', 'qcm', ${id_questionnaire}, FALSE),
@@ -296,7 +300,7 @@ async function seedMockData(tx: any) {
         ...rows.map((r: { id_question: bigint }) => Number(r.id_question)),
       );
     } else {
-      const rows = await tx<{ id_question: bigint }[]>`
+      const rows = await q<{ id_question: bigint }[]>`
         INSERT INTO question (texte, explication, type_question, id_questionnaire, genere_par_ia)
         VALUES
           ('Définition: énergie cinétique', 'E_c = 1/2 m v^2', 'flashcard', ${id_questionnaire}, FALSE),
@@ -309,13 +313,13 @@ async function seedMockData(tx: any) {
     }
   }
 
-  const qcmQuestionIds = await tx<{ id_question: bigint }[]>`
+  const qcmQuestionIds = await q<{ id_question: bigint }[]>`
     SELECT id_question FROM question WHERE type_question = 'qcm' ORDER BY id_question ASC;
   `;
 
   for (const r of qcmQuestionIds) {
     const id_question = Number(r.id_question);
-    await tx`
+    await q`
       INSERT INTO proposition (texte, est_correcte, id_question)
       VALUES
         ('2x', TRUE, ${id_question}),
@@ -331,7 +335,7 @@ async function seedMockData(tx: any) {
     const id_utilisateur = utilisateurIds[i]!;
     const id_questionnaire = questionnaireIds[i % questionnaireIds.length]!;
 
-    const rows = await tx<{ id_session: bigint }[]>`
+    const rows = await q<{ id_session: bigint }[]>`
       INSERT INTO session_entrainement (id_utilisateur, id_questionnaire)
       VALUES (${id_utilisateur}, ${id_questionnaire})
       RETURNING id_session;
@@ -340,14 +344,12 @@ async function seedMockData(tx: any) {
   }
 
   for (const id_session of sessionIds) {
-    const session = await tx<{ id_questionnaire: bigint }[]>`
+    const session = await q<{ id_questionnaire: bigint }[]>`
       SELECT id_questionnaire FROM session_entrainement WHERE id_session = ${id_session};
     `;
     const id_questionnaire = Number(session[0]!.id_questionnaire);
 
-    const questions = await tx<
-      { id_question: bigint; type_question: string }[]
-    >`
+    const questions = await q<{ id_question: bigint; type_question: string }[]>`
       SELECT id_question, type_question
       FROM question
       WHERE id_questionnaire = ${id_questionnaire}
@@ -355,10 +357,10 @@ async function seedMockData(tx: any) {
       LIMIT 2;
     `;
 
-    for (const q of questions) {
-      const id_question = Number(q.id_question);
-      if (q.type_question === "qcm") {
-        const prop = await tx<{ id_proposition: bigint }[]>`
+    for (const questionRow of questions) {
+      const id_question = Number(questionRow.id_question);
+      if (questionRow.type_question === "qcm") {
+        const prop = await q<{ id_proposition: bigint }[]>`
           SELECT id_proposition
           FROM proposition
           WHERE id_question = ${id_question} AND est_correcte = TRUE
@@ -367,13 +369,13 @@ async function seedMockData(tx: any) {
         `;
         const id_proposition = prop[0] ? Number(prop[0].id_proposition) : null;
 
-        await tx`
+        await q`
           INSERT INTO reponse_session (reponse_texte, est_correcte, id_session, id_question, id_proposition)
           VALUES (NULL, TRUE, ${id_session}, ${id_question}, ${id_proposition})
           ON CONFLICT DO NOTHING;
         `;
       } else {
-        await tx`
+        await q`
           INSERT INTO reponse_session (reponse_texte, est_correcte, id_session, id_question, id_proposition)
           VALUES ('Réponse libre (mock)', NULL, ${id_session}, ${id_question}, NULL)
           ON CONFLICT DO NOTHING;
@@ -392,6 +394,10 @@ async function seedMockData(tx: any) {
 }
 
 export async function GET() {
+  if (process.env.NODE_ENV === "production") {
+    return new Response(null, { status: 404 });
+  }
+
   try {
     const summary = await sql.begin(async (tx) => {
       await ensureSchema(tx);
@@ -400,6 +406,7 @@ export async function GET() {
 
     return Response.json({ message: "Database seeded successfully", summary });
   } catch (error) {
-    return Response.json({ error }, { status: 500 });
+    console.error("[seed] Failed", error);
+    return Response.json({ error: "Failed to seed database" }, { status: 500 });
   }
 }

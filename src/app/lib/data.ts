@@ -74,6 +74,14 @@ export const utilisateurData = {
     return rows.map((r) => mapRowDates(r, ["date_inscription"]));
   },
 
+  async getByEmail(email: string): Promise<Utilisateur | null> {
+    const row = await queryOne<Utilisateur>(
+      "SELECT * FROM utilisateur WHERE email = $1",
+      [email],
+    );
+    return row ? mapRowDates(row, ["date_inscription"]) : null;
+  },
+
   async getById(id_utilisateur: number): Promise<Utilisateur | null> {
     const row = await queryOne<Utilisateur>(
       "SELECT * FROM utilisateur WHERE id_utilisateur = $1",

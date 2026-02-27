@@ -17,9 +17,14 @@ async function runQuery() {
 }
 
 export async function GET() {
+  if (process.env.NODE_ENV === "production") {
+    return new Response(null, { status: 404 });
+  }
+
   try {
     return Response.json(await runQuery());
   } catch (error) {
-    return Response.json({ error }, { status: 500 });
+    console.error("[query] Failed", error);
+    return Response.json({ error: "Query failed" }, { status: 500 });
   }
 }
