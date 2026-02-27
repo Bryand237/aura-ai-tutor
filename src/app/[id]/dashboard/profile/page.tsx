@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Profile | Aura AI",
+  title: "Profile",
   description: "Profil de l'utilisateur.",
 };
 

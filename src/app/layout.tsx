@@ -4,10 +4,13 @@ import { poppins } from "./ui/fonts";
 import Providers from "./providers";
 
 export const metadata: Metadata = {
-  title: "Aura AI | Tuteur Inteligent",
-  description: "Application Web de tutorat.",
+  title: {
+    template: "%s | Aura AI",
+    default: "Aura AI | Tuteur Intelligent",
+  },
+  description: "Tuteur implemente avec l'IA pour l'aide a l'apprentissage",
+  metadataBase: new URL("https://aura-ai-tutor.versel.app"),
 };
-
 export default function RootLayout({
   children,
 }: Readonly<{

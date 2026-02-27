@@ -7,7 +7,11 @@ import { useRouter, useSearchParams } from "next/navigation";
 import styles from "./page.module.css";
 import { CircleAlert } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { Metadata } from "next";
 
+const metadata: Metadata = {
+  title: "Login",
+};
 export default function Page() {
   return (
     <Suspense fallback={null}>
