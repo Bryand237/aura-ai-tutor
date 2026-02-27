@@ -5,11 +5,6 @@ import { useActionState } from "react";
 import { register } from "@/app/lib/actions";
 
 import styles from "./page.module.css";
-import { Metadata } from "next";
-
-const metadata: Metadata = {
-  title: "SignUp",
-};
 
 export default function Page() {
   const [errorMessage, formAction] = useActionState(register, undefined);

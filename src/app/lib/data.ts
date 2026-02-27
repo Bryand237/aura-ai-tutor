@@ -33,7 +33,9 @@ import type {
   Utilisateur,
 } from "./definitions";
 
-const sql = getSql();
+function sql() {
+  return getSql();
+}
 
 function mapRowDates<T extends Record<string, unknown>>(
   row: T,
@@ -50,7 +52,7 @@ function mapRowDates<T extends Record<string, unknown>>(
 }
 
 async function queryOne<T>(text: string, values: unknown[] = []) {
-  const rows = (await sql.unsafe(
+  const rows = (await sql().unsafe(
     text,
     values as unknown as ParameterOrJSON<never>[],
   )) as unknown as T[];
@@ -58,7 +60,7 @@ async function queryOne<T>(text: string, values: unknown[] = []) {
 }
 
 async function queryMany<T>(text: string, values: unknown[] = []) {
-  const rows = (await sql.unsafe(
+  const rows = (await sql().unsafe(
     text,
     values as unknown as ParameterOrJSON<never>[],
   )) as unknown as T[];

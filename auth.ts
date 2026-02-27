@@ -4,18 +4,11 @@ import { authConfig } from "./auth.config";
 import { z } from "zod";
 import type { Utilisateur } from "@/app/lib/definitions";
 import bcrypt from "bcrypt";
-import postgres from "postgres";
-
-const connectionString = process.env.POSTGRES_URL ?? process.env.DATABASE_URL;
-
-if (!connectionString) {
-  throw new Error("Missing POSTGRES_URL or DATABASE_URL env var");
-}
-
-const sql = postgres(connectionString, { ssl: "require", prepare: false });
+import { getSql } from "@/app/lib/db";
 
 async function getUser(email: string): Promise<Utilisateur | undefined> {
   try {
+    const sql = getSql();
     const user = await sql<
       Utilisateur[]
     >`SELECT * FROM utilisateur WHERE email=${email}`;

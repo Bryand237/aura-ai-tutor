@@ -2,14 +2,6 @@ import postgres from "postgres";
 import bcrypt from "bcrypt";
 import { utilisateurs as placeholderUsers } from "../lib/placeholder-data";
 
-const connectionString = process.env.POSTGRES_URL ?? process.env.DATABASE_URL;
-
-if (!connectionString) {
-  throw new Error("Missing POSTGRES_URL or DATABASE_URL env var");
-}
-
-const sql = postgres(connectionString, { ssl: "require", prepare: false });
-
 async function ensureSchema(tx: unknown) {
   const q = tx as unknown as ReturnType<typeof postgres>;
   await q`CREATE EXTENSION IF NOT EXISTS "pgcrypto"`;
@@ -399,14 +391,24 @@ export async function GET() {
   }
 
   try {
-    const summary = await sql.begin(async (tx) => {
+    const connectionString =
+      process.env.POSTGRES_URL ?? process.env.DATABASE_URL;
+    if (!connectionString) {
+      return Response.json(
+        { error: "Missing POSTGRES_URL or DATABASE_URL env var" },
+        { status: 500 },
+      );
+    }
+
+    const sql = postgres(connectionString, { ssl: "require", prepare: false });
+    const results = await sql.begin(async (tx) => {
       await ensureSchema(tx);
-      return seedMockData(tx);
+      return await seedMockData(tx);
     });
 
-    return Response.json({ message: "Database seeded successfully", summary });
+    return Response.json({ ok: true, ...results });
   } catch (error) {
     console.error("[seed] Failed", error);
-    return Response.json({ error: "Failed to seed database" }, { status: 500 });
+    return Response.json({ error: "Seeding failed" }, { status: 500 });
   }
 }

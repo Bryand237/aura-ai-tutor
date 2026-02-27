@@ -10,7 +10,10 @@ declare global {
 export function getPool() {
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
-    throw new Error("Missing DATABASE_URL env var");
+    const thrower = (() => {
+      throw new Error("Missing DATABASE_URL env var");
+    }) as unknown as Pool;
+    return thrower;
   }
 
   if (!global.__auraDbPool) {
@@ -23,7 +26,12 @@ export function getPool() {
 export function getSql() {
   const connectionString = process.env.DATABASE_URL ?? process.env.POSTGRES_URL;
   if (!connectionString) {
-    throw new Error("Missing DATABASE_URL env var");
+    const thrower = ((...args: unknown[]) => {
+      void args;
+      throw new Error("Missing POSTGRES_URL or DATABASE_URL env var");
+    }) as unknown as ReturnType<typeof postgres>;
+
+    return thrower;
   }
 
   if (!global.__auraSql) {
