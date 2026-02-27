@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { coursData } from "@/app/lib/data";
+import { notFound } from "next/navigation";
 import {
   questions,
   questionnaires,
@@ -25,28 +26,12 @@ export default async function Page({
   const id_cours = Number(coursId);
 
   if (!Number.isFinite(userId) || !Number.isFinite(id_cours)) {
-    return (
-      <div className={styles.page}>
-        <div className={`p-6 ${styles.headerCard}`}>
-          <h1 className="text-2xl font-bold">Flashcards</h1>
-          <p className={`mt-2 text-sm ${styles.muted}`}>
-            Paramètres invalides.
-          </p>
-        </div>
-      </div>
-    );
+    notFound();
   }
 
   const cours = await coursData.getById(id_cours);
   if (!cours || String(cours.id_utilisateur) !== String(userId)) {
-    return (
-      <div className={styles.page}>
-        <div className={`p-6 ${styles.headerCard}`}>
-          <h1 className="text-2xl font-bold">Flashcards</h1>
-          <p className={`mt-2 text-sm ${styles.muted}`}>Cours introuvable.</p>
-        </div>
-      </div>
-    );
+    notFound();
   }
 
   return (

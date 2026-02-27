@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import ConversationClient from "./ConversationClient";
 import { getRevisionConversationBootstrap } from "@/app/lib/revision-actions";
+import { notFound } from "next/navigation";
 
 export const metadata: Metadata = {
   title: "Révision | Conversation",
@@ -17,7 +18,7 @@ export default async function Page({
   const coursIdNum = Number(coursId);
 
   if (!Number.isFinite(userId) || !Number.isFinite(coursIdNum)) {
-    return <div>Paramètres invalides.</div>;
+    notFound();
   }
 
   const { conversation, documents, messages } =
