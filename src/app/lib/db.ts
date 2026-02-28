@@ -8,7 +8,8 @@ declare global {
 }
 
 export function getPool() {
-  const connectionString = process.env.DATABASE_URL;
+  const connectionString =
+    process.env.POSTGRES_URL_NON_POOLING ?? process.env.DATABASE_URL;
   if (!connectionString) {
     const thrower = (() => {
       throw new Error("Missing DATABASE_URL env var");
@@ -17,14 +18,20 @@ export function getPool() {
   }
 
   if (!global.__auraDbPool) {
-    global.__auraDbPool = new Pool({ connectionString });
+    global.__auraDbPool = new Pool({
+      connectionString,
+      ssl: { rejectUnauthorized: false },
+    });
   }
 
   return global.__auraDbPool;
 }
 
 export function getSql() {
-  const connectionString = process.env.DATABASE_URL ?? process.env.POSTGRES_URL;
+  const connectionString =
+    process.env.POSTGRES_URL_NON_POOLING ??
+    process.env.DATABASE_URL ??
+    process.env.POSTGRES_URL;
   if (!connectionString) {
     const thrower = ((...args: unknown[]) => {
       void args;
@@ -35,7 +42,10 @@ export function getSql() {
   }
 
   if (!global.__auraSql) {
-    global.__auraSql = postgres(connectionString, { ssl: "require" });
+    global.__auraSql = postgres(connectionString, {
+      ssl: "require",
+      prepare: false,
+    });
   }
 
   return global.__auraSql;
