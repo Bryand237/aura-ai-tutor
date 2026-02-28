@@ -1,4 +1,5 @@
-import { Brain, PowerIcon } from "lucide-react";
+import { PowerIcon } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import NavLinks from "./nav-links";
 
@@ -13,7 +14,16 @@ export default function Sidenav() {
           <div
             className={`m-auto flex h-12 w-12 items-center justify-center gap-2 rounded-xl ${styles.brandLogo}`}
           >
-            <Brain className="h-10 w-10" color="white" />
+            <div className={styles.brandLogoInner}>
+              <Image
+                src="/android-chrome-192x192.png"
+                alt="Aura AI"
+                fill
+                sizes="48px"
+                className="object-cover scale-110"
+                priority
+              />
+            </div>
           </div>
           <p className="font-bold text-center">Aura AI</p>
         </Link>

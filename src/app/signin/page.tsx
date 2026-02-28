@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useActionState } from "react";
 import { register } from "@/app/lib/actions";
 
@@ -14,7 +15,16 @@ export default function Page() {
       <div className={styles.card}>
         <Link href="/" className="block text-center no-underline">
           <div className={styles.logo} aria-hidden>
-            <span className="text-3xl font-black">AI</span>
+            <div className={styles.logoInner}>
+              <Image
+                src="/android-chrome-192x192.png"
+                alt="Aura AI"
+                fill
+                sizes="70px"
+                className="object-cover scale-110"
+                priority
+              />
+            </div>
           </div>
           <h3 className="mb-1 font-bold text-slate-900">Aura AI</h3>
           <p className="text-sm text-slate-500">Créer un compte</p>

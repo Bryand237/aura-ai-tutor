@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { Suspense, useActionState, useEffect } from "react";
 import { authenticate } from "@/app/lib/actions";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -46,7 +47,16 @@ function LoginInner() {
       <div className={styles.card}>
         <Link href="/" className="block text-center no-underline">
           <div className={styles.logo} aria-hidden>
-            <span className="text-4xl font-black">AI</span>
+            <div className={styles.logoInner}>
+              <Image
+                src="/android-chrome-192x192.png"
+                alt="Aura AI"
+                fill
+                sizes="80px"
+                className="object-cover scale-110"
+                priority
+              />
+            </div>
           </div>
           <h3 className="mb-1 font-bold text-slate-900">Aura AI</h3>
           <p className="text-sm text-slate-500">Tuteur Intelligent - IUT</p>

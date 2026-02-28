@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import styles from "@/app/ui/home.module.css";
 import { auth } from "../../../../auth";
 
@@ -12,14 +13,16 @@ export default async function HeaderNav() {
       className={`${styles.nav_neu} flex flex-col gap-3 md:flex-row md:items-center md:justify-between`}
     >
       <Link href="/" className="flex items-center gap-3 no-underline">
-        <div
-          className="h-11 w-11 rounded-[14px] md:h-[45px] md:w-[45px]"
-          style={{
-            background:
-              "linear-gradient(135deg,var(--blue-electric),var(--emeraude))",
-            boxShadow: "var(--neu-raised-sm)",
-          }}
-        />
+        <div className="relative h-11 w-11 overflow-hidden rounded-full shadow-(--neu-raised-sm) md:h-[45px] md:w-[45px]">
+          <Image
+            src="/android-chrome-192x192.png"
+            alt="Aura AI"
+            fill
+            sizes="45px"
+            className="object-cover scale-110"
+            priority
+          />
+        </div>
         <span className="text-lg font-bold text-(--neu-text)">Aura AI</span>
       </Link>
 
