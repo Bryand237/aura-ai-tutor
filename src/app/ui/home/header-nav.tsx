@@ -9,11 +9,11 @@ export default async function HeaderNav() {
 
   return (
     <nav
-      className={`${styles.nav_neu} flex flex-wrap items-center justify-between px-5 md:px-10`}
+      className={`${styles.nav_neu} flex flex-col gap-3 md:flex-row md:items-center md:justify-between`}
     >
       <Link href="/" className="flex items-center gap-3 no-underline">
         <div
-          className="h-[45px] w-[45px] rounded-[14px]"
+          className="h-11 w-11 rounded-[14px] md:h-[45px] md:w-[45px]"
           style={{
             background:
               "linear-gradient(135deg,var(--blue-electric),var(--emeraude))",
@@ -23,7 +23,7 @@ export default async function HeaderNav() {
         <span className="text-lg font-bold text-(--neu-text)">Aura AI</span>
       </Link>
 
-      <div className="mt-3 flex items-center gap-2 md:mt-0 md:gap-3">
+      <div className="flex w-full flex-wrap items-center justify-center gap-2 md:w-auto md:justify-end md:gap-3">
         <Link
           href="/about"
           className={styles.nav_link_neu}

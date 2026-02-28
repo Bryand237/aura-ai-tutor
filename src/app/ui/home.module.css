@@ -145,6 +145,16 @@
   .nav_neu {
     padding: 12px 20px;
   }
+  .nav_link_neu {
+    padding: 8px 12px;
+    margin: 0;
+    border-radius: 14px;
+    font-size: 0.95rem;
+  }
+  .neu_btn {
+    padding: 0.45rem 0.9rem;
+    font-size: 0.95rem;
+  }
   .nav_neu .d-flex.gap-2 {
     width: 100%;
     justify-content: center;
