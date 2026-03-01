@@ -30,7 +30,15 @@ export default async function Page({
     );
   }
 
-  const cours = await coursData.listByUtilisateur(id_utilisateur);
+  let cours: Awaited<ReturnType<typeof coursData.listByUtilisateur>> = [];
+  let loadError: string | null = null;
+
+  try {
+    cours = await coursData.listByUtilisateur(id_utilisateur);
+  } catch (error) {
+    console.error("[revision] Failed to load cours", error);
+    loadError = "Impossible de charger tes cours pour le moment.";
+  }
 
   return (
     <div className={`${styles.page} space-y-6`}>
@@ -52,19 +60,25 @@ export default async function Page({
             </Link>
 
             <div className={`px-4 py-2 text-sm ${styles.badge}`}>
-              {cours.length} cours
+              {loadError ? "-" : cours.length} cours
             </div>
           </div>
         </div>
       </header>
 
-      {cours.length === 0 ? (
+      {loadError && (
+        <div className={`p-6 ${styles.courseCard}`}>
+          <p className={`text-sm ${styles.muted}`}>{loadError}</p>
+        </div>
+      )}
+
+      {!loadError && cours.length === 0 ? (
         <div className={`p-6 ${styles.courseCard}`}>
           <p className={`text-sm ${styles.muted}`}>
             Aucun cours trouvé pour le moment.
           </p>
         </div>
-      ) : (
+      ) : !loadError ? (
         <section className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
           {cours.map((c) => {
             const date =
@@ -86,7 +100,7 @@ export default async function Page({
             );
           })}
         </section>
-      )}
+      ) : null}
     </div>
   );
 }

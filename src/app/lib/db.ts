@@ -25,7 +25,6 @@ export function getPool() {
       query_timeout: 30_000,
       statement_timeout: 30_000,
       keepAlive: true,
-      family: 4,
     });
   }
 
@@ -54,7 +53,6 @@ export function getSql() {
       idle_timeout: 30,
       max_lifetime: 60 * 5,
       keep_alive: 60,
-      family: 4,
     });
   }
 
