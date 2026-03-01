@@ -73,7 +73,7 @@ export async function uploadCoursDocument(formData: FormData) {
   let blob: Awaited<ReturnType<typeof put>>;
   try {
     blob = await put(blobPath, buffer, {
-      access: "public",
+      access: "private",
       contentType: file.type || undefined,
       addRandomSuffix: false,
     } as unknown as Parameters<typeof put>[2]);
