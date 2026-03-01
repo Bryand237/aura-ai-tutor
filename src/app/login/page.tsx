@@ -21,16 +21,31 @@ function LoginInner() {
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
 
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const callbackUrlParam = searchParams.get("callbackUrl");
+  const callbackUrl = callbackUrlParam || "/";
   const [errorMessage, formAction, isPending] = useActionState(
     authenticate,
     undefined,
   );
 
   useEffect(() => {
+    if (!callbackUrlParam) return;
+    router.replace("/login");
+  }, [callbackUrlParam, router]);
+
+  useEffect(() => {
     if (status !== "authenticated") return;
     const id = session?.user?.id;
     if (!id) return;
+    try {
+      const target = new URL(callbackUrl, window.location.origin);
+      if (target.origin === window.location.origin) {
+        router.replace(`${target.pathname}${target.search}${target.hash}`);
+        return;
+      }
+    } catch {
+      // ignore and fallback
+    }
     router.replace(`/${id}/dashboard`);
   }, [router, session?.user?.id, status]);
 
