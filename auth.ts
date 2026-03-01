@@ -5,6 +5,7 @@ import { z } from "zod";
 import type { Utilisateur } from "@/app/lib/definitions";
 import bcrypt from "bcrypt";
 import { getSql } from "@/app/lib/db";
+import { inspect } from "util";
 
 async function getUser(email: string): Promise<Utilisateur | undefined> {
   try {
@@ -14,7 +15,18 @@ async function getUser(email: string): Promise<Utilisateur | undefined> {
     >`SELECT * FROM utilisateur WHERE email=${email}`;
     return user[0];
   } catch (error) {
-    console.error("Failed to fetch user:", error);
+    if (error instanceof AggregateError) {
+      console.error("Failed to fetch user (AggregateError):", {
+        message: error.message,
+        causes: (error as AggregateError).errors?.map((e) =>
+          e instanceof Error
+            ? { name: e.name, message: e.message, stack: e.stack }
+            : { value: inspect(e) },
+        ),
+      });
+    } else {
+      console.error("Failed to fetch user:", error);
+    }
     throw new Error("Failed to fetch user.");
   }
 }

@@ -21,6 +21,11 @@ export function getPool() {
     global.__auraDbPool = new Pool({
       connectionString,
       ssl: { rejectUnauthorized: false },
+      connectionTimeoutMillis: 15_000,
+      query_timeout: 30_000,
+      statement_timeout: 30_000,
+      keepAlive: true,
+      family: 4,
     });
   }
 
@@ -45,6 +50,11 @@ export function getSql() {
     global.__auraSql = postgres(connectionString, {
       ssl: "require",
       prepare: false,
+      connect_timeout: 15,
+      idle_timeout: 30,
+      max_lifetime: 60 * 5,
+      keep_alive: 60,
+      family: 4,
     });
   }
 

@@ -12,7 +12,9 @@
   background: var(--neu-bg);
   border-radius: 24px;
   box-shadow: var(--neu-raised);
-  transition: box-shadow 160ms ease, transform 160ms ease;
+  transition:
+    box-shadow 160ms ease,
+    transform 160ms ease;
 }
 
 .courseCard:hover {
@@ -29,4 +31,120 @@
   border-radius: 9999px;
   box-shadow: var(--neu-raised-sm);
   color: var(--neu-text-muted);
+}
+
+.primaryButton {
+  background: linear-gradient(135deg, var(--blue-electric), var(--emeraude));
+  border-radius: 9999px;
+  box-shadow: var(--neu-raised-sm);
+  color: white;
+  transition:
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.primaryButton:hover {
+  box-shadow: var(--neu-hover);
+}
+
+.primaryButton:active {
+  transform: translateY(1px);
+}
+
+.courseHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.iconButton {
+  background: var(--neu-bg);
+  border: none;
+  border-radius: 9999px;
+  box-shadow: var(--neu-raised-sm);
+  cursor: pointer;
+  color: var(--neu-text-muted);
+  padding: 8px;
+  transition:
+    box-shadow 160ms ease,
+    transform 160ms ease,
+    color 160ms ease;
+}
+
+.iconButton:hover {
+  box-shadow: var(--neu-hover);
+  color: var(--neu-text);
+}
+
+.iconButton:active {
+  transform: translateY(1px);
+}
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  z-index: 50;
+}
+
+.modal {
+  width: 100%;
+  max-width: 460px;
+  background: var(--neu-bg);
+  border-radius: 28px;
+  box-shadow: var(--neu-raised);
+  padding: 22px;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.secondaryButton {
+  background: var(--neu-bg);
+  border: none;
+  border-radius: 9999px;
+  box-shadow: var(--neu-raised-sm);
+  cursor: pointer;
+  color: var(--neu-text);
+  padding: 10px 14px;
+  transition:
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.secondaryButton:hover {
+  box-shadow: var(--neu-hover);
+}
+
+.secondaryButton:active {
+  transform: translateY(1px);
+}
+
+.dangerButton {
+  background: linear-gradient(135deg, #ef4444, #f97316);
+  border: none;
+  border-radius: 9999px;
+  box-shadow: var(--neu-raised-sm);
+  cursor: pointer;
+  color: white;
+  padding: 10px 14px;
+  transition:
+    box-shadow 160ms ease,
+    transform 160ms ease;
+}
+
+.dangerButton:hover {
+  box-shadow: var(--neu-hover);
+}
+
+.dangerButton:active {
+  transform: translateY(1px);
 }

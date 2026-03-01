@@ -31,6 +31,8 @@ export default function ConversationClient({
   const [selectedDocId, setSelectedDocId] = useState<string>("all");
   const [messageText, setMessageText] = useState<string>("");
   const [isSending, setIsSending] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [deleteDocError, setDeleteDocError] = useState<string | null>(null);
   const [optimisticMessages, setOptimisticMessages] =
     useState<Message[]>(initialMessages);
 
@@ -76,8 +78,15 @@ export default function ConversationClient({
           <form
             action={async (formData) => {
               startTransition(async () => {
-                await uploadCoursDocument(formData);
-                router.refresh();
+                setUploadError(null);
+                try {
+                  await uploadCoursDocument(formData);
+                  router.refresh();
+                } catch (err) {
+                  const message =
+                    err instanceof Error ? err.message : "Import impossible.";
+                  setUploadError(message);
+                }
               });
             }}
             className="space-y-3"
@@ -105,6 +114,12 @@ export default function ConversationClient({
             >
               Importer
             </button>
+
+            {uploadError && (
+              <p className="text-sm font-semibold text-red-600">
+                {uploadError}
+              </p>
+            )}
           </form>
 
           <div className={`mt-6 p-3 space-y-3 ${styles.scrollArea}`}>
@@ -127,12 +142,21 @@ export default function ConversationClient({
                   <form
                     action={async () => {
                       startTransition(async () => {
-                        await deleteCoursDocument({
-                          userId,
-                          coursId,
-                          documentId: d.id_document,
-                        });
-                        router.refresh();
+                        setDeleteDocError(null);
+                        try {
+                          await deleteCoursDocument({
+                            userId,
+                            coursId,
+                            documentId: d.id_document,
+                          });
+                          router.refresh();
+                        } catch (err) {
+                          const message =
+                            err instanceof Error
+                              ? err.message
+                              : "Suppression impossible.";
+                          setDeleteDocError(message);
+                        }
                       });
                     }}
                   >
@@ -146,6 +170,12 @@ export default function ConversationClient({
                   </form>
                 </div>
               ))
+            )}
+
+            {deleteDocError && (
+              <p className="text-sm font-semibold text-red-600">
+                {deleteDocError}
+              </p>
             )}
           </div>
         </div>

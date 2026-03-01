@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { coursData } from "@/app/lib/data";
 import Link from "next/link";
 import styles from "./revision.module.css";
+import CourseCard from "./CourseCard";
 
 export const metadata: Metadata = {
   title: "Revision",
@@ -42,8 +43,17 @@ export default async function Page({
             </p>
           </div>
 
-          <div className={`px-4 py-2 text-sm ${styles.badge}`}>
-            {cours.length} cours
+          <div className="flex flex-wrap items-center gap-3">
+            <Link
+              href={`/${id_utilisateur}/dashboard/revision/create`}
+              className={`px-4 py-2 text-sm font-semibold no-underline ${styles.primaryButton}`}
+            >
+              Ajouter un cours
+            </Link>
+
+            <div className={`px-4 py-2 text-sm ${styles.badge}`}>
+              {cours.length} cours
+            </div>
           </div>
         </div>
       </header>
@@ -63,28 +73,16 @@ export default async function Page({
                 : new Date(c.date_creation);
 
             return (
-              <Link
+              <CourseCard
                 key={c.id_cours}
-                href={`/${id_utilisateur}/dashboard/revision/${c.id_cours}/conversation`}
-                className="block no-underline"
-              >
-                <article className={`p-6 ${styles.courseCard}`}>
-                  <h2 className="text-lg font-semibold">{c.titre}</h2>
-
-                  <p className={`mt-2 text-sm ${styles.muted}`}>
-                    {c.description || "Aucune description."}
-                  </p>
-
-                  <div className={`mt-4 text-xs ${styles.muted}`}>
-                    Créé le{" "}
-                    {date.toLocaleDateString("fr-FR", {
-                      year: "numeric",
-                      month: "long",
-                      day: "2-digit",
-                    })}
-                  </div>
-                </article>
-              </Link>
+                userId={id_utilisateur}
+                cours={c}
+                createdAt={date.toLocaleDateString("fr-FR", {
+                  year: "numeric",
+                  month: "long",
+                  day: "2-digit",
+                })}
+              />
             );
           })}
         </section>

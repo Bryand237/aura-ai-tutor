@@ -392,7 +392,9 @@ export async function GET() {
 
   try {
     const connectionString =
-      process.env.POSTGRES_URL ?? process.env.DATABASE_URL;
+      process.env.POSTGRES_URL_NON_POOLING ??
+      process.env.DATABASE_URL ??
+      process.env.POSTGRES_URL;
     if (!connectionString) {
       return Response.json(
         { error: "Missing POSTGRES_URL or DATABASE_URL env var" },

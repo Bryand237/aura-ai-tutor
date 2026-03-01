@@ -1,4 +1,4 @@
-import postgres from "postgres";
+import { getSql } from "../lib/db";
 
 export async function GET() {
   if (process.env.NODE_ENV === "production") {
@@ -6,16 +6,7 @@ export async function GET() {
   }
 
   try {
-    const connectionString =
-      process.env.POSTGRES_URL ?? process.env.DATABASE_URL;
-    if (!connectionString) {
-      return Response.json(
-        { error: "Missing POSTGRES_URL or DATABASE_URL env var" },
-        { status: 500 },
-      );
-    }
-
-    const sql = postgres(connectionString, { ssl: "require" });
+    const sql = getSql();
     const data = await sql`
       SELECT NOW() as now;
     `;
